@@ -1,50 +1,58 @@
 #include <iostream>
-#include <vector>
+#include <unordered_set>
 
-bool isValid(std::vector<std::vector<char>>& board, int row, int col, char num) {
-    for (int i = 0; i < 9; ++i) {
-        if (board[row][i] == num || board[i][col] == num || board[row - row % 3 + i / 3][col - col % 3 + i % 3] == num) {
-            return false;
+using namespace std;
+
+bool isValidSudoku(char board[9][9]) {
+    for (int i = 0; i < 9; i++) {
+        unordered_set<char> rowSet;
+        unordered_set<char> colSet;
+        unordered_set<char> boxSet;
+
+        for (int j = 0; j < 9; j++) {
+            // Check rows
+            if (board[i][j] != '.' && rowSet.find(board[i][j]) != rowSet.end()) {
+                return false;
+            }
+            rowSet.insert(board[i][j]);
+
+            // Check columns
+            if (board[j][i] != '.' && colSet.find(board[j][i]) != colSet.end()) {
+                return false;
+            }
+            colSet.insert(board[j][i]);
+
+            // Check 3x3 boxes
+            int boxRow = 3 * (i / 3);
+            int boxCol = 3 * (i % 3);
+            if (board[boxRow + j / 3][boxCol + j % 3] != '.' &&
+                boxSet.find(board[boxRow + j / 3][boxCol + j % 3]) != boxSet.end()) {
+                return false;
+            }
+            boxSet.insert(board[boxRow + j / 3][boxCol + j % 3]);
         }
     }
+
     return true;
 }
 
-bool solveSudoku(std::vector<std::vector<char>>& board) {
-    for (int row = 0; row < 9; ++row) {
-        for (int col = 0; col < 9; ++col) {
-            if (board[row][col] == '.') {
-                for (char num = '1'; num <= '9'; ++num) {
-                    if (isValid(board, row, col, num)) {
-                        board[row][col] = num;
-                        if (solveSudoku(board)) {
-                            return true;
-                        } else {
-                            board[row][col] = '.';
-                        }
-                    }
-                }
-                return false;
-            }
-        }
-    }
-    return true; 
-}
-
 int main() {
-    int size;
-    std::cin >> size;
-    std::vector<std::vector<char>> board(size, std::vector<char>(size));
-    for (int i = 0; i < size; ++i) {
-        for (int j = 0; j < size; ++j) {
-            std::cin >> board[i][j];
+    char board[9][9];
+
+    // Input Sudoku board
+    int n;
+    cin >> n;
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            cin >> board[i][j];
         }
     }
 
-    if (solveSudoku(board)) {
-        std::cout << "YES" << std::endl;
+    // Check validity and print the result
+    if (isValidSudoku(board)) {
+        cout << "YES" << endl;
     } else {
-        std::cout << "NO" << std::endl;
+        cout << "NO" << endl;
     }
 
     return 0;
