@@ -1,0 +1,104 @@
+Balanced Brackets
+Close the brackets
+You are given a set of strings, each consisting of brackets (, ), {, }, [, or ]. A bracket is considered an opening bracket if it is one of (, {, or [, and it is considered a closing bracket if it is one of ), }, or ].
+
+A string of brackets is considered balanced if it meets the following conditions:
+
+It contains no unmatched brackets.
+For every opening bracket, there is a corresponding closing bracket of the same type, and the brackets are properly nested.
+
+Your task is to determine, for each given string, whether it is balanced or not. If a string is balanced, output "YES"; otherwise, output "NO".
+
+Important Note: Ensure that you save your solution before progressing to the next question and before submitting your answer.
+
+Exercise-1
+input:
+{[()]},{[(])},{{[[(())]]}}
+
+Output:
+YES
+NO
+YES
+
+Exercise-2
+input:
+[],{},(),[}
+Output:
+YES
+YES
+YES
+NO
+
+
+
+
+CODE -
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+bool areBracketsBalanced(string expr) {
+    stack<char> s;
+    char x;
+
+    for (int i = 0; i < expr.length(); i++) {
+        if (expr[i] == '(' || expr[i] == '[' || expr[i] == '{') {
+            s.push(expr[i]);
+            continue;
+        }
+
+        if (s.empty())
+            return false;
+
+        switch (expr[i]) {
+            case ')':
+                x = s.top();
+                s.pop();
+                if (x == '{' || x == '[')
+                    return false;
+                break;
+
+            case '}':
+                x = s.top();
+                s.pop();
+                if (x == '(' || x == '[')
+                    return false;
+                break;
+
+            case ']':
+                x = s.top();
+                s.pop();
+                if (x == '(' || x == '{')
+                    return false;
+                break;
+        }
+    }
+
+    return s.empty();
+}
+
+int main() {
+    string input;
+    getline(cin, input); // Read the entire line
+
+    stringstream ss(input);
+    string expr;
+
+    while (getline(ss, expr, ',')) {
+        // Remove any leading or trailing whitespaces
+        expr.erase(remove_if(expr.begin(), expr.end(), ::isspace), expr.end());
+
+        if (areBracketsBalanced(expr))
+            cout << "YES" << endl;
+        else
+            cout << "NO" << endl;
+    }
+
+    return 0;
+}
+
+
+
+

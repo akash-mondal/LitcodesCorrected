@@ -1,0 +1,55 @@
+Maximum OR
+Given a 0-indexed integer array nums of length n and an integer k, you are allowed to perform an operation on any element by multiplying it by 2. The goal is to find the maximum possible value of the bitwise OR operation performed on all elements in the nums array after applying the operation at most k times.
+
+Note that the bitwise OR operation (|) between two integers a and b results in a new integer where each bit is set if it is set in either a or b.
+
+
+Code-
+#include <iostream>
+#include <vector>
+#include <cmath>
+
+using namespace std;
+
+class Solution {
+public:
+    long long maximumOr(vector<int>& nums, int k) {
+        int n = nums.size(); 
+        vector<int> pre(n, 0), post(n, 0); 
+        
+        for(int i=1; i<n; i++) pre[i] = (pre[i-1] | nums[i-1]); 
+        for(int i = n-2; i>=0; i--) post[i] = (post[i+1] | nums[i+1]); 
+        
+        long long res = 0; 
+        
+        for(int i=0; i<n; i++){
+            long long num = nums[i]; 
+            num *= pow(2, k); 
+            res = max(res, pre[i] | num | post[i]);
+        }
+        return res;
+    }
+};
+
+int main() {
+    vector<int> nums;
+    int k, num;
+    
+    // Input format: "12 9\n2"
+    // Convert to: nums = [12, 9], k = 2
+    while (cin >> num) {
+        nums.push_back(num);
+    }
+    k = nums.back();
+    nums.pop_back();
+    
+    // Call the function
+    Solution sol;
+    long long result = sol.maximumOr(nums, k);
+
+    // Output the result
+    cout << result << endl;
+
+    return 0;
+}
+

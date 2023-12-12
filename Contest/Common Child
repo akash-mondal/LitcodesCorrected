@@ -1,0 +1,54 @@
+Common Child
+Common Child String
+
+Let's consider a different scenario with two strings, s1='XYZA' and s2='XAYZ'. We want to find the longest string that can be formed by removing characters from both strings without rearranging any letters. In this case, the strings have two children with a maximum length of 2: 'XY' and 'YZ'. These children can be obtained by eliminating either the 'A' or 'Z' character from both strings. The desired result for this scenario would be 2, indicating the length of the longest common child string.
+
+Input:
+pqrs
+opqs
+
+Output:
+
+3
+
+
+Code -
+
+
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int longestCommonChild(string s1, string s2) {
+    int m = s1.length();
+    int n = s2.length();
+
+    // Create a 2D vector to store the lengths of common child strings
+    vector<vector<int>> dp(m + 1, vector<int>(n + 1, 0));
+
+    // Fill the dp table
+    for (int i = 1; i <= m; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (s1[i - 1] == s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+
+    // The length of the longest common child string is stored in dp[m][n]
+    return dp[m][n];
+}
+
+int main() {
+    string s1, s2;
+    cin >> s1;
+    cin >> s2;
+    cout << longestCommonChild(s1, s2) << endl;
+
+    return 0;
+}
+
+

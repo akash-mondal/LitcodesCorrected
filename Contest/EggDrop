@@ -1,0 +1,57 @@
+Egg Drop
+Imagine you are facing a unique problem in a building with 'n' floors, each floor labeled from 1 to 'n'. Hidden within this building is a mysterious floor, 'f', which is a secret and unknown value where 0 <= f <= n. The fascinating aspect of this floor 'f' is that any egg dropped from a floor higher than 'f' will shatter into pieces, while any egg dropped from 'f' or any floor below it will miraculously remain unscathed.
+To solve this enigmatic puzzle, you are provided X eggs. Your mission is to devise an ingenious strategy to determine the exact value of 'f' using the fewest possible egg drops, while ensuring that once you find 'f', you are absolutely certain about its value.
+
+
+
+Code-
+                                                                                                                                    #include <iostream>
+#include <vector>
+#include <climits>
+
+using namespace std;
+
+int minAttempts(int eggs, int floors) {
+    // Create a 2D vector to store the minimum attempts
+    vector<vector<int>> dp(eggs + 1, vector<int>(floors + 1, 0));
+
+    // Base cases
+    for (int i = 1; i <= eggs; ++i) {
+        dp[i][1] = 1;  // If there is only one floor, one attempt is needed
+        dp[i][0] = 0;  // If there are no floors, no attempts are needed
+    }
+
+    for (int j = 1; j <= floors; ++j) {
+        dp[1][j] = j;  // If there is only one egg, attempts equal to the number of floors are needed
+    }
+
+    // Fill the rest of the matrix using dynamic programming
+    for (int i = 2; i <= eggs; ++i) {
+        for (int j = 2; j <= floors; ++j) {
+            dp[i][j] = INT_MAX;
+            for (int x = 1; x <= j; ++x) {
+                int brokenEggAttempt = 1 + max(dp[i - 1][x - 1], dp[i][j - x]);
+                dp[i][j] = min(dp[i][j], brokenEggAttempt);
+            }
+        }
+    }
+
+    // The value in the bottom-right corner of the matrix represents the minimum attempts
+    return dp[eggs][floors];
+}
+
+int main() {
+    int eggs, floors;
+
+    // Input the number of eggs and floors
+    cin >> eggs;
+    cin >> floors;
+    cout << minAttempts(eggs, floors) << endl;
+
+    return 0;
+}
+ 
+
+
+
+

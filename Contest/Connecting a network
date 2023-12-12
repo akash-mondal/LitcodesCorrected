@@ -1,0 +1,64 @@
+Connecting a network
+In a geographical region, there are N cities labeled from 1 to N. These cities are interconnected using various transportation routes forming a network. The city connectivity is represented by a list of connections between cities in the form of a 2D array route[][]. Each row (city1, city2) denotes a direct transportation route between city1 and city2.
+
+Your task is to ensure that all cities are connected either directly or indirectly. To achieve this, you can perform the following operations:
+
+Remove any existing transportation route between two cities.
+Add a new transportation route between two disconnected cities.
+Your goal is to find the minimum number of operations required to achieve full connectivity of all cities in the region.
+
+Return the minimum number of times you need to do this in order to make all the cities connected. If it is not possible, return -1.
+
+
+
+Code-
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+const int MAX_N = 100005;
+
+vector<int> adj[MAX_N];
+bool visited[MAX_N];
+
+void dfs(int u) {
+  visited[u] = true;
+  for (auto v : adj[u]) {
+    if (!visited[v]) {
+      dfs(v);
+    }
+  }
+}
+
+int main() {
+  // Read input
+  int n, m;
+  cin >> n >> m;
+
+  for (int i = 0; i < m; ++i) {
+    int u, v;
+    cin >> u >> v;
+    // Add bidirectional edges
+    adj[u].push_back(v);
+    adj[v].push_back(u);
+  }
+
+  int components = 0;
+  for (int i = 1; i <= n; ++i) {
+    if (!visited[i]) {
+      dfs(i);
+      ++components;
+    }
+  }
+
+  // If there are more than 1 component, we need to add edges between them
+  // Otherwise, no operation is needed
+  if (components > 1) {
+    cout << components - 2 << endl;
+  } else {
+    cout << 0 << endl;
+  }
+
+  return 0;
+}
